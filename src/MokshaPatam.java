@@ -86,7 +86,7 @@ public class MokshaPatam {
                 mSquareType = 0;
                 mNextSquare = i;
             }
-            pSquare = new MokshaSquare(i, mSquareType, mNextSquare, -1);
+            pSquare = new MokshaSquare(i, mSquareType, mNextSquare);
             mBoard.add(pSquare);
         }
         System.out.println("Mboard Size: " + (mBoard.size() - 1));
