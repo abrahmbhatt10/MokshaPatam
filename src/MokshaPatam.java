@@ -48,6 +48,7 @@ public class MokshaPatam {
         // Initializing the board
         MokshaSquare pSquare = null;
         mBoard.removeAll(mBoard);
+        pathsList.removeAll(pathsList);
         boolean hasLadder = false;
         boolean hasSnake = false;
         int mSquareType = 0;
@@ -65,7 +66,7 @@ public class MokshaPatam {
                 }
             }
             hasSnake = false;
-            for(int a = 0; a < ladders.length; a++)
+            for(int a = 0; a < snakes.length; a++)
             {
                 if(i == snakes[a][0])
                 {
