@@ -11,17 +11,12 @@ import java.util.ArrayList;
  */
 
 public class MokshaPatam {
-    private static ArrayList<MokshaSquare> mBoard;
-    private static ArrayList<MokshaPath> pathsList;
+    private static MokshaPath mBoard;
+    private static MokshaPath pathsList;
 
     public MokshaPatam() {
-        this.mBoard = new ArrayList<MokshaSquare>();
-        this.pathsList = new ArrayList<MokshaPath>();
-    }
-
-    public static int getPathsListSize()
-    {
-        return pathsList.size();
+        this.mBoard = new MokshaPath();
+        this.pathsList = new MokshaPath();
     }
 
 
@@ -47,8 +42,8 @@ public class MokshaPatam {
         }
         // Initializing the board
         MokshaSquare pSquare = null;
-        mBoard.removeAll(mBoard);
-        pathsList.removeAll(pathsList);
+        mBoard.squaresList.removeAll(mBoard.squaresList);
+        pathsList.squaresList.removeAll(pathsList.squaresList);
         boolean hasLadder = false;
         boolean hasSnake = false;
         int mSquareType = 0;
@@ -87,16 +82,12 @@ public class MokshaPatam {
                 mNextSquare = i;
             }
             pSquare = new MokshaSquare(i, mSquareType, mNextSquare);
-            mBoard.add(pSquare);
+            mBoard.add(i);
         }
         System.out.println("Mboard Size: " + (mBoard.size() - 1));
         // Finding All Paths
         int fewest = rollDice(boardsize);
         return fewest;
-    }
-
-    public static MokshaPath getPathsListIndex(int i) {
-        return pathsList.get(i);
     }
 
     public static MokshaSquare getSquare(int index)
@@ -115,16 +106,25 @@ public class MokshaPatam {
         return pSquare.getNextSquare();
     }
 
-    public static void addPathToList(MokshaPath pPath)
-    {
-        if (pPath != null)
-        {
-            pathsList.add(pPath);
-        }
-    }
-
     public static int rollDice(int boardSize)
     {
+        /*
+        Add the first node, 1, to the queue
+            While there are still nodes left in the queue:
+	            Pop off the node at the front and visit it.
+	                If we are at the end of the graph, then we are done!
+	                    Check all the edges that extend out of this node:
+		            If any of them are unvisited:
+			            add them to the back of the queue
+         */
+        MokshaSquare firstSquare = new MokshaSquare();
+        pathsList.squaresList.add(firstSquare.getSquareValue());
+        for(int j = 1; j < 7; j++){
+
+        }
+
+
+        /*
         // Initial dice roll when paths are 0.
         MokshaPath pPath = null;
         MokshaPath pNewPath = null;
@@ -175,6 +175,7 @@ public class MokshaPatam {
                     return fewest;
                 }
             }
+         */
         return -1;
     }
 }

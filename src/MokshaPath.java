@@ -1,21 +1,19 @@
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class MokshaPath {
-    private ArrayList<Integer> squaresList;
+    public Queue<Integer> squaresList;
     private boolean isDone;
 
     public MokshaPath() {
-        this.squaresList = new ArrayList<Integer>();
+        this.squaresList = new LinkedList<Integer>();
         isDone = false;
     }
 
-    public ArrayList<Integer> getSquaresList() {
+    public Queue<Integer> getSquaresList() {
         return squaresList;
-    }
-
-    public void setSquaresList(MokshaPath sourcePath) {
-        this.squaresList = (ArrayList<Integer>) sourcePath.getSquaresList().clone();
-        //System.out.println(squaresList);
     }
 
     public int addSquare(int squareValue, int boardSize)
@@ -53,15 +51,16 @@ public class MokshaPath {
         {
             return 0;
         }
-        return squaresList.getLast();
+        return squaresList.peek();
     }
 
     public String toString()
     {
         String pString = "Path is ";
-        for(int i = 0; i < squaresList.size(); i++)
-        {
-            pString += squaresList.get(i) + " ";
+        Iterator<Integer> it = squaresList.iterator();
+        while (it.hasNext()) {
+            Integer sValue = it.next();
+            pString += sValue.toString() + " ";
         }
         pString += "Number of Rolls: " + getNumberOfRolls();
         return pString;
