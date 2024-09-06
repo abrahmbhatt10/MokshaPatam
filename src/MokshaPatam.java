@@ -1,4 +1,6 @@
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Moksha Patam
@@ -11,171 +13,118 @@ import java.util.ArrayList;
  */
 
 public class MokshaPatam {
-    private static MokshaPath mBoard;
-    private static MokshaPath pathsList;
 
-    public MokshaPatam() {
-        this.mBoard = new MokshaPath();
-        this.pathsList = new MokshaPath();
+    /*
+        This will return the next square value depending on the amount of
+        ladders, snakes, and the current square on the board.
+     */
+    public static int getNextSquare(int currentPosition, int[][] ladders, int[][] snakes){
+        int nextPosition = 0;
+        for(int i = 0; i < ladders.length; i++)
+        {
+            if(currentPosition == ladders[i][0])
+            {
+                nextPosition = ladders[i][1];
+                break;
+            }
+        }
+        for(int i = 0; i < snakes.length; i++)
+        {
+            if(currentPosition == snakes[i][0])
+            {
+                nextPosition = snakes[i][1];
+                break;
+            }
+        }
+        if(nextPosition == 0)
+        {
+            nextPosition = currentPosition;
+        }
+        return nextPosition;
     }
 
+    public static boolean isEnd(int boardSize, int currentPosition)
+    {
+        if(currentPosition == boardSize)
+        {
+            return true;
+        }
+        return false;
+    }
 
+    public static int getNumRolls(MokshaNode pNode){
+        if(pNode == null){
+            return -1;
+        }
+        int numRolls = 0;
+        MokshaNode parentNode = null;
+        MokshaNode cNode = pNode;
+        while(cNode != null){
+            if(cNode.getSquareValue() != 0)
+                numRolls++;
+            System.out.println(cNode.getSquareValue()+" ");
+            cNode = cNode.getParentNode();
+        }
+        return numRolls;
+    }
     /**
-     * This function fewestMoves() returns the minimum number of moves
-     * to reach the final square on a board with the given size, ladders, and snakes.
+     * fewestMoves() returns the minimum number of moves
+     *  to reach the final square on a board with the given size, ladders, and snakes.
      */
     public static int fewestMoves(int boardsize, int[][] ladders, int[][] snakes) {
-        if(boardsize < 1 || boardsize > 400)
-        {
-            System.out.println("Boardsize is wrong");
-            return -1;
-        }
-        if(ladders.length < 1 || ladders.length > 15)
-        {
-            System.out.println("Laddersize is wrong");
-            return -1;
-        }
-        if(snakes.length < 1 || snakes.length > 15)
-        {
-            System.out.println("Snakesize is wrong");
-            return -1;
-        }
-        // Initializing the board
-        MokshaSquare pSquare = null;
-        mBoard.squaresList.removeAll(mBoard.squaresList);
-        pathsList.squaresList.removeAll(pathsList.squaresList);
-        boolean hasLadder = false;
-        boolean hasSnake = false;
-        int mSquareType = 0;
-        int mNextSquare = 0;
-        for(int i = 0; i < boardsize + 1; i++)
-        {
-            hasLadder = false;
-            for(int j = 0; j < ladders.length; j++)
-            {
-                if(i == ladders[j][0])
-                {
-                    hasLadder = true;
-                    mNextSquare = ladders[j][1];
-                    break;
-                }
-            }
-            hasSnake = false;
-            for(int a = 0; a < snakes.length; a++)
-            {
-                if(i == snakes[a][0])
-                {
-                    hasSnake = true;
-                    mNextSquare = snakes[a][1];
-                    break;
-                }
-            }
-            if(hasLadder == true){
-                mSquareType = 1;
-            }
-            else if(hasSnake == true)
-            {
-                mSquareType = 2;
-            }
-            else {
-                mSquareType = 0;
-                mNextSquare = i;
-            }
-            pSquare = new MokshaSquare(i, mSquareType, mNextSquare);
-            mBoard.add(i);
-        }
-        System.out.println("Mboard Size: " + (mBoard.size() - 1));
-        // Finding All Paths
-        int fewest = rollDice(boardsize);
-        return fewest;
-    }
-
-    public static MokshaSquare getSquare(int index)
-    {
-        return mBoard.get(index);
-    }
-
-    public static int getTraverseNode(int currentSquareValue, int dieValue, int boardSize)
-    {
-        MokshaSquare pSquare = null;
-        if((currentSquareValue + dieValue) > boardSize)
-        {
-            return -1;
-        }
-        pSquare = getSquare(currentSquareValue + dieValue);
-        return pSquare.getNextSquare();
-    }
-
-    public static int rollDice(int boardSize)
-    {
+        Queue<MokshaNode> mBoard= new LinkedList<MokshaNode>();
+        mBoard.removeAll(mBoard);
         /*
-        Add the first node, 1, to the queue
-            While there are still nodes left in the queue:
-	            Pop off the node at the front and visit it.
-	                If we are at the end of the graph, then we are done!
-	                    Check all the edges that extend out of this node:
-		            If any of them are unvisited:
-			            add them to the back of the queue
+            Added the first position to the Queue.
          */
-        MokshaSquare firstSquare = new MokshaSquare();
-        pathsList.squaresList.add(firstSquare.getSquareValue());
-        for(int j = 1; j < 7; j++){
-
-        }
-
-
+        MokshaNode pNode = new MokshaNode();
+        mBoard.add(pNode);
         /*
-        // Initial dice roll when paths are 0.
-        MokshaPath pPath = null;
-        MokshaPath pNewPath = null;
-        for(int i = 6; i > 0; i--)
-        {
-            pPath = new MokshaPath();
-            pPath.addSquare(getTraverseNode(0,i, boardSize), boardSize);
-            addPathToList(pPath);
-        }
-        int fewest = 0;
-        for(int i = 0; i < getPathsListSize(); i++)
-        {
-            pPath = getPathsListIndex(i);
-            if(!pPath.isDone())
-            {
-                for(int j = 6; j > 0; j--)
-                {
-                    //System.out.println("sourcePath:");
-                    //System.out.println(pPath.getSquaresList());
-                    if(j == 1)
-                    {
-                        pPath.addSquare(getTraverseNode(pPath.getLastSquare(), 6, boardSize), boardSize);
-                    }
-                    else
-                    {
-                        pNewPath = new MokshaPath();
-                        pNewPath.setSquaresList(pPath);
-                        pNewPath.addSquare(getTraverseNode(pPath.getLastSquare(), j, boardSize), boardSize);
-                        // System.out.println(pNewPath.getSquaresList());
-                        addPathToList(pNewPath);
-                    }
-                }
-            }
-                fewest = 0;
-                for(int k = 0; k < getPathsListSize(); k++){
-                    pPath = getPathsListIndex(k);
-                    if(pPath.isDone())
-                    {
-                        System.out.println("Successful " + pPath.toString());
-                        if((fewest == 0) || (fewest > pPath.getNumberOfRolls()))
-                        {
-                            fewest = pPath.getNumberOfRolls();
-                        }
-                    }
-                }
-                if(fewest != 0)
-                {
-                    return fewest;
-                }
-            }
+        While there are still nodes left in the queue:
+        currentNode = queue.remove()
+        If currentNode == last square, return its roll #!
+        For each roll (1-6), r:
+        node = the node r spaces away.
+        If it is the beginning of a snake/ladder:
+        node = the ending node of the snake/ladder
+        If node has never been visited:
+        Save the # of rolls it took to get to node
+        Add node to the back of the queue
          */
+        boolean playDice = true;
+        int currentPosition = 0;
+        MokshaNode startNode = null;
+        int nextPosition = 0;
+        MokshaNode newNode = null;
+        boolean[] isVisited = new boolean[boardsize + 1];
+        for(int i = 1; i < boardsize + 1; i++){
+            isVisited[i] = false;
+        }
+        isVisited[0] = true;
+        while(playDice)
+        {
+            startNode = mBoard.remove();
+            if((startNode != null) && (startNode.getSquareValue() == boardsize)){
+                return getNumRolls(startNode);
+            }
+            currentPosition = startNode.getSquareValue();
+            for(int diceValue = 1; diceValue < 7; diceValue++){
+                if(currentPosition + diceValue > boardsize){
+                    continue;
+                }
+                currentPosition += diceValue;
+                nextPosition = getNextSquare(currentPosition, ladders, snakes);
+                if(isVisited[nextPosition] == false)
+                {
+                    newNode = new MokshaNode(nextPosition,startNode);
+                    mBoard.add(newNode);
+                    isVisited[nextPosition] = true;
+                    if(currentPosition != nextPosition){
+                        isVisited[currentPosition] = true;
+                    }
+                }
+            }
+        }
         return -1;
     }
 }
